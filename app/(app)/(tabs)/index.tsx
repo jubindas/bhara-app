@@ -1,8 +1,11 @@
+import useLocation from "@/hooks/useLocation";
+
 import Services from "@/screens/services";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
 import {
+  ActivityIndicator,
   ImageBackground,
   ScrollView,
   StyleSheet,
@@ -12,6 +15,8 @@ import {
 } from "react-native";
 
 export default function HomeScreen() {
+  const { location, loading } = useLocation();
+
   return (
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
       <ImageBackground
@@ -20,13 +25,28 @@ export default function HomeScreen() {
         resizeMode="cover"
       >
         <View style={styles.locationWrapper}>
-          <MaterialIcons name="location-on" size={30} color="#fff" />
+          {loading ? (
+            <View style={styles.loaderCircle}>
+              <ActivityIndicator size="small" color="#fff" />
+            </View>
+          ) : (
+            <MaterialIcons name="location-on" size={30} color="#fff" />
+          )}
+
           <View>
-            <Text style={styles.locationMain}>Nazira</Text>
-            <Text style={styles.locationSub}>Sivasagar, Assam - 785685</Text>
+            <Text style={styles.locationMain}>
+              {loading ? "Detecting location..." : location.city}
+            </Text>
+
+            {!loading && (
+              <Text style={styles.locationSub}>
+                {location.district}, {location.state}
+              </Text>
+            )}
           </View>
         </View>
 
+        {/* CART ICON */}
         <View style={styles.cart}>
           <MaterialIcons name="shopping-cart" size={40} color="#fff" />
         </View>
@@ -60,16 +80,25 @@ const styles = StyleSheet.create({
     left: 20,
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 8,
     backgroundColor: "rgba(0,0,0,0.35)",
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 10,
   },
 
+  loaderCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "rgba(255,255,255,0.25)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   locationMain: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "700",
     marginBottom: 2,
   },
@@ -77,7 +106,6 @@ const styles = StyleSheet.create({
   locationSub: {
     color: "#eee",
     fontSize: 12,
-    marginRight: 20,
   },
 
   cart: {
@@ -93,7 +121,7 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(243, 243, 243, 0.9)",
+    backgroundColor: "rgba(243,243,243,0.92)",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,
@@ -104,6 +132,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
     width: "90%",
-    color: "#000000ff",
+    color: "#000",
   },
 });

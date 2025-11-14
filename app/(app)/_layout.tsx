@@ -10,7 +10,6 @@ export default function RootLayout() {
       <StatusBar hidden={false} style="dark" />
 
       <Stack>
-        <Stack.Screen name="splash" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="service-details"

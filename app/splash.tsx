@@ -1,7 +1,5 @@
 import { router } from "expo-router";
-
 import { useEffect, useRef } from "react";
-
 import { Animated, StyleSheet, View } from "react-native";
 
 export default function SplashScreen() {
@@ -19,7 +17,7 @@ export default function SplashScreen() {
           duration: 500,
           useNativeDriver: true,
         }).start(() => {
-          router.replace("/(tabs)");
+          router.replace("/login");
         });
       }, 900);
     });

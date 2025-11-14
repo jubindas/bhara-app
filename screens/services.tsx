@@ -1,118 +1,64 @@
-import axios from "axios";
-
-import { BASE_URL } from "@/constants/url";
-
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
-import { useRouter } from "expo-router";
 
 import { LayoutPanelLeft } from "lucide-react-native";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { useRouter } from "expo-router";
 
 export default function Services() {
-
-  const [categories, setCategories] = useState<any[]>([]);
-
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchcategories = async () => {
-      
-      const response = await axios.get(`${BASE_URL}/sub-categories`);
-      const all = response.data;
-
-      const categoryMap: any = {};
-      all.forEach((item: any) => {
-        const cat = item.category;
-        if (cat && cat.id) categoryMap[cat.id] = cat;
-      });
-
-      setCategories(Object.values(categoryMap));
-    };
-
-    fetchcategories();
-  }, []);
+  const categories = [
+    { title: "Cars", icon: "car-sports", color: "#4d90e7" },
+    { title: "Bikes", icon: "motorbike", color: "#ff7a5c" },
+    { title: "Electrician", icon: "lightning-bolt-outline", color: "#ffb300" },
+    { title: "Plumber", icon: "wrench", color: "#42a5f5" },
+    { title: "Carpenter", icon: "hammer", color: "#8d6e63" },
+    { title: "AC Repair", icon: "air-conditioner", color: "#26c6da" },
+  ];
 
   return (
     <View style={styles.Container}>
       <View style={styles.titleRow}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <LayoutPanelLeft size={20} color="#4d90e7" />
-          <Text style={styles.title}>Category</Text>
+          <Text style={styles.title}>Services</Text>
         </View>
 
         <Text style={styles.viewAll}>View All</Text>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.horizontalList}
-      >
-        {categories.map((cat, index) => {
-          const bg = pastelColors[index % 6];
-          const iconBg = iconColors[index % 6];
-
-          return (
-            <TouchableOpacity
-              key={cat.id}
-              style={[styles.card, { backgroundColor: bg }]}
-              activeOpacity={0.85}
-              onPress={() =>
-                router.push({
-                  pathname: "/service-details",
-                  params: { id: cat.id, name: cat.name },
-                })
-              }
-            >
-              <View style={[styles.iconBox, { backgroundColor: iconBg }]}>
-                <MaterialCommunityIcons name="tools" size={28} color="#fff" />
-              </View>
-
-              <Text style={styles.label} numberOfLines={1}>
-                {cat.name}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+      <View style={styles.gridContainer}>
+        {categories.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.card}
+            onPress={() =>
+              router.push(`/service-details?id=${index}&name=${item.title}`)
+            }
+          >
+            <View style={[styles.iconBox, { backgroundColor: item.color }]}>
+              <MaterialCommunityIcons
+                name={item.icon as any}
+                size={30}
+                color="#fff"
+              />
+            </View>
+            <Text style={styles.label}>{item.title}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 }
 
-const pastelColors = [
-  "#E3F2FF",
-  "#E9F8DB",
-  "#FFE8E8",
-  "#FFF6DB",
-  "#F1E8FF",
-  "#E2FFF4",
-];
-
-const iconColors = [
-  "#4A90E2",
-  "#6BBE45",
-  "#E94F4F",
-  "#F2C94C",
-  "#9B51E0",
-  "#2CCDB5",
-];
-
 const styles = StyleSheet.create({
   Container: {
-    flex: 1,
     width: "100%",
-    paddingTop: 10,
-    paddingBottom: 10,
+    marginTop: 10,
+    paddingHorizontal: 12,
   },
 
   titleRow: {
@@ -120,57 +66,60 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
     marginBottom: 10,
+    paddingHorizontal: 8,
   },
 
   title: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#5585d2ff",
+    color: "#4d90e7",
   },
 
   viewAll: {
     fontSize: 14,
-    color: "#0AA174",
+    color: "#0027c2",
     fontWeight: "600",
   },
 
-  horizontalList: {
-    paddingLeft: 20,
-    paddingRight: 10,
+  gridContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
 
   card: {
-    width: 120,
-    height: 150,
-    borderRadius: 24,
+    width: "32%",
+    height: 130,
+    backgroundColor: "#fff",
+    borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 18,
-    paddingVertical: 10,
+    marginBottom: 18,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
 
   iconBox: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 12,
-    elevation: 4,
+    marginBottom: 10,
     shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
     shadowRadius: 4,
+    elevation: 4,
   },
 
   label: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "600",
     color: "#333",
-    marginTop: 5,
     textAlign: "center",
-    width: "90%",
   },
 });
