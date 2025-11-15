@@ -7,6 +7,7 @@ import { Animated, StyleSheet, View } from "react-native";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function SplashScreen() {
+  
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const { user, loading } = useAuth();

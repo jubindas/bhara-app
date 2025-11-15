@@ -1,8 +1,8 @@
+import axios from "axios";
+
 import { BASE_URL } from "@/constants/url";
 
 import { useAuth } from "@/hooks/useAuth";
-
-import axios from "axios";
 
 import { router } from "expo-router";
 

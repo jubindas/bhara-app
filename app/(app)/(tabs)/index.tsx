@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import { useLocationContext } from "@/context/LocationContext";
 
 import ManualLocationModal from "@/screens/ManualLocationModal";
@@ -6,7 +8,6 @@ import Services from "@/screens/services";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import React, { useState } from "react";
 
 import {
   ActivityIndicator,
@@ -20,6 +21,7 @@ import {
 } from "react-native";
 
 export default function HomeScreen() {
+
   const locationCtx = useLocationContext();
 
   const {

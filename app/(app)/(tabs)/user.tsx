@@ -1,6 +1,10 @@
-import { useAuth } from "@/hooks/useAuth";
-import { router } from "expo-router";
 import React from "react";
+
+import { useAuth } from "@/hooks/useAuth";
+
+import { router } from "expo-router";
+
+
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function UserScreen() {
