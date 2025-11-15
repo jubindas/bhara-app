@@ -8,7 +8,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { Tabs } from "expo-router";
 
-
 export default function TabLayout() {
   return (
     <Tabs
@@ -30,11 +29,11 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="explore"
+        name="pullcar"
         options={{
-          title: "Explore",
+          title: "Pull Car",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <Ionicons name="car-outline" size={28} color={color} />
           ),
         }}
       />

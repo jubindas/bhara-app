@@ -43,6 +43,7 @@ const vendorsData: Vendors[] = [
 
 export default function VendorsDetails() {
   const { name } = useLocalSearchParams();
+
   const [visibleNumbers, setVisibleNumbers] = useState<number[]>([]);
 
   const toggleNumber = (index: number) => {
