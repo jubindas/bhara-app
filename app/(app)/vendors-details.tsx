@@ -43,7 +43,6 @@ const vendorsData: Vendors[] = [
 
 export default function VendorsDetails() {
   const { name } = useLocalSearchParams();
-
   const [visibleNumbers, setVisibleNumbers] = useState<number[]>([]);
 
   const toggleNumber = (index: number) => {
@@ -56,10 +55,9 @@ export default function VendorsDetails() {
 
   return (
     <View style={styles.container}>
-    
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <ArrowLeft size={22} color="#1A1A1A" />
+          <ArrowLeft size={24} color="#1A1A1A" />
         </TouchableOpacity>
 
         <Text style={styles.headerTitle}>{name}</Text>
@@ -70,7 +68,7 @@ export default function VendorsDetails() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.iconBtn}>
-            <Heart size={22} color="#E63946" />
+            <Heart size={22} color="#FF4D67" />
           </TouchableOpacity>
         </View>
       </View>
@@ -117,30 +115,33 @@ export default function VendorsDetails() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F4F7FB" },
+  container: { flex: 1, backgroundColor: "#F2F5FA" },
 
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 50,
-    paddingBottom: 18,
+    paddingTop: 48,
+    paddingBottom: 16,
     paddingHorizontal: 18,
     backgroundColor: "#FFFFFF",
-    elevation: 4,
-    height: 100,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
 
   backBtn: {
-    backgroundColor: "#E3E6F2",
+    backgroundColor: "#EEF1F9",
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 12,
   },
 
   headerTitle: {
     flex: 1,
     marginLeft: 14,
-    fontSize: 24,
-    fontWeight: "700",
+    fontSize: 22,
+    fontWeight: "800",
     color: "#1A1A1A",
   },
 
@@ -148,39 +149,39 @@ const styles = StyleSheet.create({
 
   iconBtn: {
     marginLeft: 12,
-    backgroundColor: "#F1F4FF",
+    backgroundColor: "#F7F8FC",
     padding: 8,
-    borderRadius: 10,
+    borderRadius: 12,
   },
 
   vendorCard: {
     backgroundColor: "#FFFFFF",
-    padding: 18,
+    padding: 20,
     borderRadius: 18,
-    marginBottom: 16,
+    marginBottom: 20,
     shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
     shadowOffset: { width: 0, height: 3 },
     borderWidth: 1,
-    borderColor: "#E4E6EB",
+    borderColor: "#E6E7EB",
   },
 
   vendorName: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: "700",
-    color: "#1A1A1A",
+    color: "#0A0A0A",
   },
 
   vendorDesc: {
     fontSize: 14,
-    color: "#555",
+    color: "#616161",
     marginTop: 6,
     lineHeight: 20,
   },
 
   bottomRow: {
-    marginTop: 14,
+    marginTop: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -188,14 +189,15 @@ const styles = StyleSheet.create({
 
   callBtn: {
     backgroundColor: "#2D6AE7",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 12,
   },
 
   callBtnText: {
     color: "#FFF",
     fontWeight: "700",
+    fontSize: 14,
   },
 
   vendorMobile: {
@@ -207,7 +209,7 @@ const styles = StyleSheet.create({
   noData: {
     marginTop: 40,
     textAlign: "center",
-    color: "#777",
+    color: "#7A7A7A",
     fontSize: 16,
   },
 });
