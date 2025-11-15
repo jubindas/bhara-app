@@ -1,8 +1,12 @@
-import useLocation from "@/hooks/useLocation";
+import { useLocationContext } from "@/context/LocationContext";
+
+import ManualLocationModal from "@/screens/ManualLocationModal";
 
 import Services from "@/screens/services";
 
 import { MaterialIcons } from "@expo/vector-icons";
+
+import React, { useState } from "react";
 
 import {
   ActivityIndicator,
@@ -11,16 +15,40 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 
 export default function HomeScreen() {
-  const { location, loading } = useLocation();
+  const locationCtx = useLocationContext();
+
+  const {
+    finalLocation = {
+      city: "",
+      district: "",
+      state: "",
+      pincode: "",
+    },
+    manualLocation = {
+      city: "",
+      district: "",
+      state: "",
+      pincode: "",
+    },
+    setManualLocation = () => {},
+    loading = false,
+  } = locationCtx ?? {};
+
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   return (
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
-        <View style={styles.locationWrapper}>
+        <TouchableOpacity
+          style={styles.locationWrapper}
+          activeOpacity={0.7}
+          onPress={() => setModalVisible(true)}
+        >
           {loading ? (
             <View style={styles.loaderCircle}>
               <ActivityIndicator size="small" color="#000" />
@@ -33,16 +61,24 @@ export default function HomeScreen() {
 
           <View>
             <Text style={styles.locationMain}>
-              {loading ? "Loading..." : location.city}
+              {loading ? "Loading..." : finalLocation.city}
             </Text>
 
             {!loading && (
               <Text style={styles.locationSub}>
-                {location.district}, {location.state}
+                {finalLocation.district}, {finalLocation.state} -{" "}
+                {finalLocation.pincode}
               </Text>
             )}
           </View>
-        </View>
+
+          <MaterialIcons
+            name="keyboard-arrow-down"
+            size={22}
+            color="#fff"
+            style={{ marginLeft: "auto" }}
+          />
+        </TouchableOpacity>
 
         <View style={styles.cart}>
           <MaterialIcons name="shopping-cart" size={45} color="#fff" />
@@ -67,6 +103,13 @@ export default function HomeScreen() {
       <View style={{ paddingHorizontal: 10, marginTop: 10 }}>
         <Services />
       </View>
+
+      <ManualLocationModal
+        visible={modalVisible}
+        initialData={manualLocation}
+        onClose={() => setModalVisible(false)}
+        onSave={(data) => setManualLocation(data)}
+      />
     </ScrollView>
   );
 }
@@ -84,10 +127,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
     backgroundColor: "rgba(0,0,0,0.45)",
     borderRadius: 16,
-    width: "65%",
+    width: "75%",
   },
 
   locationIconWrapper: {
@@ -96,7 +139,6 @@ const styles = StyleSheet.create({
     borderRadius: 19,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
   },
 
   loaderCircle: {
@@ -110,13 +152,13 @@ const styles = StyleSheet.create({
   },
 
   locationMain: {
-    color: "#ffffffff",
-    fontSize: 18,
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "700",
   },
 
   locationSub: {
-    color: "#ffffffff",
+    color: "#fff",
     fontSize: 13,
     marginTop: 2,
   },
@@ -135,7 +177,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 15,
     borderRadius: 12,
-    elevation: 4,
   },
 
   input: {

@@ -1,4 +1,5 @@
 import * as Location from "expo-location";
+
 import { useEffect, useState } from "react";
 
 export default function useLocation() {
@@ -6,6 +7,7 @@ export default function useLocation() {
     city: "",
     district: "",
     state: "",
+    pincode: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -33,6 +35,7 @@ export default function useLocation() {
           city: place.city || place.subregion || "Unknown",
           district: place.district || "",
           state: place.region || "",
+          pincode: place.postalCode || "",
         });
       }
 
