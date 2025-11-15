@@ -76,7 +76,7 @@ export default function HomeScreen() {
             name="keyboard-arrow-down"
             size={22}
             color="#fff"
-            style={{ marginLeft: "auto" }}
+            style={{ marginLeft: "auto", marginTop: 20 }}
           />
         </TouchableOpacity>
 
