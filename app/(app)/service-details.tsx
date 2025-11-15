@@ -1,9 +1,5 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 import { router, useLocalSearchParams } from "expo-router";
-
 import { ArrowLeft, Heart, Share2 } from "lucide-react-native";
-
 import React, { useState } from "react";
 
 import {
@@ -15,37 +11,61 @@ import {
   View,
 } from "react-native";
 
+type Vendor = {
+  id: number;
+  name: string;
+  phone: string;
+};
+
 type ServiceItem = {
   id: number;
   title: string;
   desc: string;
-  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  icon: string;
+  vendors: Vendor[];
 };
 
 export default function ServiceDetails() {
   const { name } = useLocalSearchParams();
 
-  const [unlockedCards, setUnlockedCards] = useState<number[]>([]);
+  const [expandedCards, setExpandedCards] = useState<number[]>([]);
+
+  const [visiblePhones, setVisiblePhones] = useState<number[]>([]);
+
+  const toggleVendors = (id: number) => {
+    setExpandedCards((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   const staticData: Record<string, ServiceItem[]> = {
     Cars: [
       {
         id: 1,
         title: "Car Wash",
-        desc: "Exterior & interior deep cleaning",
+        desc: "Complete exterior and interior deep cleaning with vacuuming, polishing, and shine finish.",
         icon: "car-wash",
+        vendors: [
+          { id: 1, name: "A1 Car Wash", phone: "+91 9876543210" },
+          { id: 2, name: "Clean & Shine Motors", phone: "+91 9123456789" },
+        ],
       },
       {
         id: 2,
         title: "Car Service",
         desc: "Engine service & oil change",
         icon: "car-wrench",
+        vendors: [
+          { id: 1, name: "Speed Garage", phone: "+91 9988776655" },
+          { id: 2, name: "AutoFix Center", phone: "+91 8877665544" },
+        ],
       },
       {
         id: 3,
         title: "Wheel Alignment",
         desc: "Alignment and wheel balancing",
         icon: "tire",
+        vendors: [{ id: 1, name: "Wheel Pro", phone: "+91 9090909090" }],
       },
     ],
     Bikes: [
@@ -54,12 +74,14 @@ export default function ServiceDetails() {
         title: "Bike Wash",
         desc: "Foam wash + shine polish",
         icon: "motorbike",
+        vendors: [{ id: 1, name: "Bike Spa", phone: "+91 9812345678" }],
       },
       {
         id: 2,
         title: "Bike Repair",
         desc: "Full servicing and tune-up",
         icon: "tools",
+        vendors: [{ id: 1, name: "Rider Garage", phone: "+91 9988223344" }],
       },
     ],
     Electrician: [
@@ -68,48 +90,14 @@ export default function ServiceDetails() {
         title: "Fan Repair",
         desc: "Installation & repair services",
         icon: "fan",
+        vendors: [{ id: 1, name: "Electric Buddy", phone: "+91 9000001111" }],
       },
       {
         id: 2,
         title: "Switch Board",
         desc: "Fix wiring & switchboard issues",
         icon: "flash",
-      },
-    ],
-    Plumber: [
-      {
-        id: 1,
-        title: "Pipe Leakage",
-        desc: "Leakage fix & pipeline repair",
-        icon: "pipe-leak",
-      },
-      {
-        id: 2,
-        title: "Tap Repair",
-        desc: "Kitchen/bath taps repair",
-        icon: "water",
-      },
-    ],
-    Carpenter: [
-      {
-        id: 1,
-        title: "Furniture Repair",
-        desc: "Door, chair, table fixing",
-        icon: "hammer",
-      },
-    ],
-    "AC Repair": [
-      {
-        id: 1,
-        title: "AC Service",
-        desc: "Deep cleaning + gas check",
-        icon: "air-conditioner",
-      },
-      {
-        id: 2,
-        title: "AC Installation",
-        desc: "Window & Split installation",
-        icon: "tools",
+        vendors: [{ id: 1, name: "SwitchMasters", phone: "+91 8080808080" }],
       },
     ],
   };
@@ -120,7 +108,7 @@ export default function ServiceDetails() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <ArrowLeft size={22} color="#1A1A1A" style={{ marginTop: 10 }} />
+          <ArrowLeft size={22} color="#1A1A1A" style={{ marginTop: 3 }} />
         </TouchableOpacity>
 
         <Text style={styles.headerTitle}>{name}</Text>
@@ -144,10 +132,10 @@ export default function ServiceDetails() {
           <Text style={styles.noData}>No services found.</Text>
         }
         renderItem={({ item }) => {
-          const isUnlocked = unlockedCards.includes(item.id);
+          const isExpanded = expandedCards.includes(item.id);
 
           return (
-            <TouchableOpacity style={styles.card}>
+            <View style={styles.card}>
               <View style={styles.row}>
                 <Image
                   source={require("@/assets/bhara-img/image2.png")}
@@ -156,25 +144,58 @@ export default function ServiceDetails() {
 
                 <View style={styles.textBox}>
                   <Text style={styles.title}>{item.title}</Text>
-                  <Text style={styles.desc}>{item.desc}</Text>
 
-                  {isUnlocked ? (
-                    <Text style={styles.phone}>📞 +91 9878987676</Text>
-                  ) : (
-                    <TouchableOpacity
-                      style={styles.unlockBtn}
-                      onPress={() =>
-                        setUnlockedCards((prev) => [...prev, item.id])
-                      }
-                    >
-                      <Text style={styles.unlockBtnText}>Membership</Text>
-                    </TouchableOpacity>
-                  )}
+                  <Text
+                    style={styles.desc}
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                  >
+                    {item.desc}
+                  </Text>
+
+                  <TouchableOpacity
+                    style={styles.vendorBtn}
+                    onPress={() => toggleVendors(item.id)}
+                  >
+                    <Text style={styles.vendorBtnText}>
+                      {isExpanded ? "Hide Vendors" : "View Vendors"}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
 
                 <Text style={styles.arrow}>›</Text>
               </View>
-            </TouchableOpacity>
+
+              {isExpanded && (
+                <View style={styles.vendorList}>
+                  {item.vendors.map((v) => {
+                    const phoneVisible = visiblePhones.includes(v.id);
+
+                    return (
+                      <View key={v.id} style={styles.vendorItem}>
+                        <View>
+                          <Text style={styles.vendorName}>{v.name}</Text>
+
+                          {phoneVisible ? (
+                            <Text style={styles.vendorPhone}>{v.phone}</Text>
+                          ) : (
+                            <TouchableOpacity
+                              onPress={() =>
+                                setVisiblePhones((prev) => [...prev, v.id])
+                              }
+                            >
+                              <Text style={styles.showNumberBtn}>
+                                Show Number
+                              </Text>
+                            </TouchableOpacity>
+                          )}
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
+            </View>
           );
         }}
       />
@@ -205,8 +226,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#E3E6F2",
     padding: 10,
     borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
   },
 
   headerTitle: {
@@ -217,7 +236,7 @@ const styles = StyleSheet.create({
     color: "#1A1A1A",
   },
 
-  rightIcons: { flexDirection: "row", alignItems: "center" },
+  rightIcons: { flexDirection: "row" },
 
   iconBtn: {
     marginLeft: 12,
@@ -227,63 +246,93 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#fff",
     padding: 16,
     borderRadius: 20,
     marginBottom: 18,
     elevation: 3,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    borderWidth: 1,
     borderColor: "#E6ECF5",
+    borderWidth: 1,
   },
 
-  row: { flexDirection: "row", alignItems: "center", minHeight: 90 },
+  row: { flexDirection: "row", alignItems: "center" },
 
   image: {
     width: 80,
     height: 80,
-    borderRadius: 18,
-    marginRight: 16,
-    backgroundColor: "#DDE7FF",
+    borderRadius: 16,
+    marginRight: 14,
   },
 
   textBox: { flex: 1 },
 
   title: { fontSize: 18, fontWeight: "700", color: "#1A1A1A" },
 
-  desc: { fontSize: 14, color: "#555", marginTop: 3 },
+  desc: { fontSize: 14, color: "#555", marginTop: 4, lineHeight: 20 },
 
-  phone: {
-    marginTop: 8,
-    fontSize: 15,
-    color: "#2D6AE7",
-    fontWeight: "700",
-  },
+  noData: { marginTop: 40, fontSize: 16, textAlign: "center", color: "#555" },
 
-  unlockBtn: {
+  vendorBtn: {
     marginTop: 8,
     backgroundColor: "#2D6AE7",
     paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    paddingHorizontal: 10,
+    borderRadius: 8,
     alignSelf: "flex-start",
   },
 
-  unlockBtnText: {
-    color: "#FFF",
-    fontSize: 14,
+  vendorBtnText: {
+    color: "#fff",
+    fontSize: 13,
     fontWeight: "700",
   },
 
-  arrow: { fontSize: 26, color: "#B5B5B5", marginLeft: 10 },
+  arrow: { fontSize: 26, color: "#bbb" },
 
-  noData: {
-    marginTop: 40,
-    fontSize: 16,
-    textAlign: "center",
-    color: "#555",
+  vendorList: {
+    marginTop: 12,
+    backgroundColor: "#F6F8FF",
+    padding: 12,
+    borderRadius: 14,
+  },
+
+  vendorItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+
+  vendorName: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#1A1A1A",
+  },
+
+  vendorPhone: {
+    fontSize: 13,
+    color: "#444",
+    marginTop: 2,
+  },
+
+  bookBtn: {
+    backgroundColor: "#3B82F6",
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    alignSelf: "center",
+  },
+
+  bookBtnText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+
+  showNumberBtn: {
+    color: "#2D6AE7",
+    fontWeight: "700",
+    fontSize: 13,
+    marginTop: 2,
   },
 });
