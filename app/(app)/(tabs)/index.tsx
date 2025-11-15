@@ -33,7 +33,7 @@ export default function HomeScreen() {
 
           <View>
             <Text style={styles.locationMain}>
-              {loading ? "Detecting location..." : location.city}
+              {loading ? "Loading..." : location.city}
             </Text>
 
             {!loading && (
@@ -52,7 +52,7 @@ export default function HomeScreen() {
           <MaterialIcons name="search" size={22} color="#777" />
           <TextInput
             placeholder="Search services..."
-            placeholderTextColor="#979090ff"
+            placeholderTextColor="#9a8c8cff"
             style={styles.input}
           />
         </View>
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.95)",
+    backgroundColor: "rgba(255, 255, 255, 0.93)",
     paddingVertical: 12,
     paddingHorizontal: 15,
     borderRadius: 12,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   banner: {
     width: "100%",
     height: 220,
-    borderRadius: 16,
+    borderRadius: 29,
     marginTop: -60,
   },
 });

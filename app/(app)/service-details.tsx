@@ -1,5 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
+
 import { ArrowLeft, Heart, Share2 } from "lucide-react-native";
+
 import React, { useState } from "react";
 
 import {
@@ -11,26 +13,17 @@ import {
   View,
 } from "react-native";
 
-type Vendor = {
-  id: number;
-  name: string;
-  phone: string;
-};
-
 type ServiceItem = {
   id: number;
   title: string;
   desc: string;
   icon: string;
-  vendors: Vendor[];
 };
 
 export default function ServiceDetails() {
   const { name } = useLocalSearchParams();
 
   const [expandedCards, setExpandedCards] = useState<number[]>([]);
-
-  const [visiblePhones, setVisiblePhones] = useState<number[]>([]);
 
   const toggleVendors = (id: number) => {
     setExpandedCards((prev) =>
@@ -45,27 +38,18 @@ export default function ServiceDetails() {
         title: "Car Wash",
         desc: "Complete exterior and interior deep cleaning with vacuuming, polishing, and shine finish.",
         icon: "car-wash",
-        vendors: [
-          { id: 1, name: "A1 Car Wash", phone: "+91 9876543210" },
-          { id: 2, name: "Clean & Shine Motors", phone: "+91 9123456789" },
-        ],
       },
       {
         id: 2,
         title: "Car Service",
         desc: "Engine service & oil change",
         icon: "car-wrench",
-        vendors: [
-          { id: 1, name: "Speed Garage", phone: "+91 9988776655" },
-          { id: 2, name: "AutoFix Center", phone: "+91 8877665544" },
-        ],
       },
       {
         id: 3,
         title: "Wheel Alignment",
         desc: "Alignment and wheel balancing",
         icon: "tire",
-        vendors: [{ id: 1, name: "Wheel Pro", phone: "+91 9090909090" }],
       },
     ],
     Bikes: [
@@ -74,14 +58,12 @@ export default function ServiceDetails() {
         title: "Bike Wash",
         desc: "Foam wash + shine polish",
         icon: "motorbike",
-        vendors: [{ id: 1, name: "Bike Spa", phone: "+91 9812345678" }],
       },
       {
         id: 2,
         title: "Bike Repair",
         desc: "Full servicing and tune-up",
         icon: "tools",
-        vendors: [{ id: 1, name: "Rider Garage", phone: "+91 9988223344" }],
       },
     ],
     Electrician: [
@@ -90,14 +72,12 @@ export default function ServiceDetails() {
         title: "Fan Repair",
         desc: "Installation & repair services",
         icon: "fan",
-        vendors: [{ id: 1, name: "Electric Buddy", phone: "+91 9000001111" }],
       },
       {
         id: 2,
         title: "Switch Board",
         desc: "Fix wiring & switchboard issues",
         icon: "flash",
-        vendors: [{ id: 1, name: "SwitchMasters", phone: "+91 8080808080" }],
       },
     ],
   };
@@ -165,36 +145,6 @@ export default function ServiceDetails() {
 
                 <Text style={styles.arrow}>›</Text>
               </View>
-
-              {isExpanded && (
-                <View style={styles.vendorList}>
-                  {item.vendors.map((v) => {
-                    const phoneVisible = visiblePhones.includes(v.id);
-
-                    return (
-                      <View key={v.id} style={styles.vendorItem}>
-                        <View>
-                          <Text style={styles.vendorName}>{v.name}</Text>
-
-                          {phoneVisible ? (
-                            <Text style={styles.vendorPhone}>{v.phone}</Text>
-                          ) : (
-                            <TouchableOpacity
-                              onPress={() =>
-                                setVisiblePhones((prev) => [...prev, v.id])
-                              }
-                            >
-                              <Text style={styles.showNumberBtn}>
-                                Show Number
-                              </Text>
-                            </TouchableOpacity>
-                          )}
-                        </View>
-                      </View>
-                    );
-                  })}
-                </View>
-              )}
             </View>
           );
         }}
@@ -288,51 +238,4 @@ const styles = StyleSheet.create({
   },
 
   arrow: { fontSize: 26, color: "#bbb" },
-
-  vendorList: {
-    marginTop: 12,
-    backgroundColor: "#F6F8FF",
-    padding: 12,
-    borderRadius: 14,
-  },
-
-  vendorItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderColor: "#E2E8F0",
-  },
-
-  vendorName: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#1A1A1A",
-  },
-
-  vendorPhone: {
-    fontSize: 13,
-    color: "#444",
-    marginTop: 2,
-  },
-
-  bookBtn: {
-    backgroundColor: "#3B82F6",
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 8,
-    alignSelf: "center",
-  },
-
-  bookBtnText: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-
-  showNumberBtn: {
-    color: "#2D6AE7",
-    fontWeight: "700",
-    fontSize: 13,
-    marginTop: 2,
-  },
 });
