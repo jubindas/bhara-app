@@ -34,6 +34,12 @@ export default function RootLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="vendors-details"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </>
   );

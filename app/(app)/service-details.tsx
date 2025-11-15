@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import { ArrowLeft, Heart, Share2 } from "lucide-react-native";
 
-import React, { useState } from "react";
+import React from "react";
 
 import {
   FlatList,
@@ -22,14 +22,6 @@ type ServiceItem = {
 
 export default function ServiceDetails() {
   const { name } = useLocalSearchParams();
-
-  const [expandedCards, setExpandedCards] = useState<number[]>([]);
-
-  const toggleVendors = (id: number) => {
-    setExpandedCards((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
-  };
 
   const staticData: Record<string, ServiceItem[]> = {
     Cars: [
@@ -112,8 +104,6 @@ export default function ServiceDetails() {
           <Text style={styles.noData}>No services found.</Text>
         }
         renderItem={({ item }) => {
-          const isExpanded = expandedCards.includes(item.id);
-
           return (
             <View style={styles.card}>
               <View style={styles.row}>
@@ -135,11 +125,16 @@ export default function ServiceDetails() {
 
                   <TouchableOpacity
                     style={styles.vendorBtn}
-                    onPress={() => toggleVendors(item.id)}
+                    onPress={() => {
+                      router.push({
+                        pathname: "/(app)/vendors-details",
+                        params: {
+                          name: name,
+                        },
+                      });
+                    }}
                   >
-                    <Text style={styles.vendorBtnText}>
-                      {isExpanded ? "Hide Vendors" : "View Vendors"}
-                    </Text>
+                    <Text style={styles.vendorBtnText}>Vendors</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -167,8 +162,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
     height: 100,
   },
 
