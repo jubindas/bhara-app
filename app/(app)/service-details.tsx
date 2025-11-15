@@ -4,10 +4,11 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import { ArrowLeft, Heart, Share2 } from "lucide-react-native";
 
-import React from "react";
+import React, { useState } from "react";
 
 import {
   FlatList,
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -23,6 +24,8 @@ type ServiceItem = {
 
 export default function ServiceDetails() {
   const { name } = useLocalSearchParams();
+
+  const [unlockedCards, setUnlockedCards] = useState<number[]>([]);
 
   const staticData: Record<string, ServiceItem[]> = {
     Cars: [
@@ -117,13 +120,7 @@ export default function ServiceDetails() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <ArrowLeft
-            size={22}
-            color="#1A1A1A"
-            style={{
-              marginTop: 10,
-            }}
-          />
+          <ArrowLeft size={22} color="#1A1A1A" style={{ marginTop: 10 }} />
         </TouchableOpacity>
 
         <Text style={styles.headerTitle}>{name}</Text>
@@ -132,7 +129,6 @@ export default function ServiceDetails() {
           <TouchableOpacity style={styles.iconBtn}>
             <Share2 size={22} color="#1A1A1A" />
           </TouchableOpacity>
-
           <TouchableOpacity style={styles.iconBtn}>
             <Heart size={22} color="#E63946" />
           </TouchableOpacity>
@@ -144,30 +140,43 @@ export default function ServiceDetails() {
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 18 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card}>
-            <View style={styles.row}>
-              <View style={styles.iconBox}>
-                <MaterialCommunityIcons
-                  name={item.icon}
-                  size={26}
-                  color="#2D6AE7"
-                />
-              </View>
-
-              <View style={styles.textBox}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.desc}>{item.desc}</Text>
-                <Text style={styles.phone}>📞 +91 9878987676</Text>
-              </View>
-
-              <Text style={styles.arrow}>›</Text>
-            </View>
-          </TouchableOpacity>
-        )}
         ListEmptyComponent={
           <Text style={styles.noData}>No services found.</Text>
         }
+        renderItem={({ item }) => {
+          const isUnlocked = unlockedCards.includes(item.id);
+
+          return (
+            <TouchableOpacity style={styles.card}>
+              <View style={styles.row}>
+                <Image
+                  source={require("@/assets/bhara-img/image2.png")}
+                  style={styles.image}
+                />
+
+                <View style={styles.textBox}>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.desc}>{item.desc}</Text>
+
+                  {isUnlocked ? (
+                    <Text style={styles.phone}>📞 +91 9878987676</Text>
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.unlockBtn}
+                      onPress={() =>
+                        setUnlockedCards((prev) => [...prev, item.id])
+                      }
+                    >
+                      <Text style={styles.unlockBtnText}>Membership</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+                <Text style={styles.arrow}>›</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );
@@ -193,7 +202,7 @@ const styles = StyleSheet.create({
   },
 
   backBtn: {
-    backgroundColor: "#e3e6f2ff",
+    backgroundColor: "#E3E6F2",
     padding: 10,
     borderRadius: 10,
     justifyContent: "center",
@@ -208,10 +217,7 @@ const styles = StyleSheet.create({
     color: "#1A1A1A",
   },
 
-  rightIcons: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+  rightIcons: { flexDirection: "row", alignItems: "center" },
 
   iconBtn: {
     marginLeft: 12,
@@ -223,57 +229,56 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
     padding: 16,
-    borderRadius: 14,
-    marginBottom: 14,
-
-    elevation: 2,
+    borderRadius: 20,
+    marginBottom: 18,
+    elevation: 3,
     shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    shadowOffset: { width: 0, height: 2 },
-
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
     borderWidth: 1,
-    borderColor: "#E8E8E8",
+    borderColor: "#E6ECF5",
   },
 
-  row: { flexDirection: "row", alignItems: "center" },
+  row: { flexDirection: "row", alignItems: "center", minHeight: 90 },
 
-  iconBox: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: "#EAF0FF",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 14,
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 18,
+    marginRight: 16,
+    backgroundColor: "#DDE7FF",
   },
 
   textBox: { flex: 1 },
 
-  title: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#1A1A1A",
-  },
+  title: { fontSize: 18, fontWeight: "700", color: "#1A1A1A" },
 
-  desc: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 3,
-  },
+  desc: { fontSize: 14, color: "#555", marginTop: 3 },
 
   phone: {
-    marginTop: 6,
-    fontSize: 14,
-    color: "#333",
-    fontWeight: "600",
+    marginTop: 8,
+    fontSize: 15,
+    color: "#2D6AE7",
+    fontWeight: "700",
   },
 
-  arrow: {
-    fontSize: 26,
-    color: "#B5B5B5",
-    marginLeft: 10,
+  unlockBtn: {
+    marginTop: 8,
+    backgroundColor: "#2D6AE7",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    alignSelf: "flex-start",
   },
+
+  unlockBtnText: {
+    color: "#FFF",
+    fontSize: 14,
+    fontWeight: "700",
+  },
+
+  arrow: { fontSize: 26, color: "#B5B5B5", marginLeft: 10 },
 
   noData: {
     marginTop: 40,

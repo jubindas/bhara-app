@@ -6,7 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import {
   ActivityIndicator,
-  ImageBackground,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,25 +15,20 @@ import {
 } from "react-native";
 
 export default function HomeScreen() {
-  
   const { location, loading } = useLocation();
-
-  
 
   return (
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-      <ImageBackground
-        source={require("@/assets/bhara-img/hero.png")}
-        style={styles.hero}
-        resizeMode="cover"
-      >
+      <View style={styles.header}>
         <View style={styles.locationWrapper}>
           {loading ? (
             <View style={styles.loaderCircle}>
-              <ActivityIndicator size="small" color="#fff" />
+              <ActivityIndicator size="small" color="#000" />
             </View>
           ) : (
-            <MaterialIcons name="location-on" size={30} color="#fff" />
+            <View style={styles.locationIconWrapper}>
+              <MaterialIcons name="location-on" size={39} color="#fff" />
+            </View>
           )}
 
           <View>
@@ -50,7 +45,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.cart}>
-          <MaterialIcons name="shopping-cart" size={40} color="#fff" />
+          <MaterialIcons name="shopping-cart" size={45} color="#fff" />
         </View>
 
         <View style={styles.searchBar}>
@@ -61,9 +56,15 @@ export default function HomeScreen() {
             style={styles.input}
           />
         </View>
-      </ImageBackground>
+      </View>
 
-      <View style={{ paddingHorizontal: 10 }}>
+      <Image
+        source={require("@/assets/bhara-img/image4.png")}
+        style={styles.banner}
+        resizeMode="cover"
+      />
+
+      <View style={{ paddingHorizontal: 10, marginTop: 10 }}>
         <Services />
       </View>
     </ScrollView>
@@ -71,63 +72,70 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  hero: {
-    height: 400,
-    width: "100%",
+  header: {
+    backgroundColor: "#96D5FF",
+    paddingBottom: 90,
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    position: "relative",
   },
 
   locationWrapper: {
-    position: "absolute",
-    top: 40,
-    left: 20,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    backgroundColor: "rgba(0,0,0,0.35)",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    borderRadius: 16,
+    width: "65%",
+  },
+
+  locationIconWrapper: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
   },
 
   loaderCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "rgba(255,255,255,0.25)",
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "#ddd",
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 12,
   },
 
   locationMain: {
-    color: "#fff",
+    color: "#ffffffff",
     fontSize: 18,
     fontWeight: "700",
-    marginBottom: 2,
   },
 
   locationSub: {
-    color: "#eee",
-    fontSize: 12,
+    color: "#ffffffff",
+    fontSize: 13,
+    marginTop: 2,
   },
 
   cart: {
     position: "absolute",
-    top: 50,
+    top: 45,
     right: 20,
   },
 
   searchBar: {
-    position: "absolute",
-    top: 120,
-    left: 20,
-    right: 20,
+    marginTop: 20,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(243,243,243,0.92)",
-    paddingVertical: 10,
+    backgroundColor: "rgba(255,255,255,0.95)",
+    paddingVertical: 12,
     paddingHorizontal: 15,
-    borderRadius: 10,
-    elevation: 5,
+    borderRadius: 12,
+    elevation: 4,
   },
 
   input: {
@@ -135,5 +143,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: "90%",
     color: "#000",
+  },
+
+  banner: {
+    width: "100%",
+    height: 220,
+    borderRadius: 16,
+    marginTop: -60,
   },
 });
