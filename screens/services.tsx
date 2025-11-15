@@ -1,23 +1,34 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 import { LayoutPanelLeft } from "lucide-react-native";
 
 import React from "react";
 
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
-import { useRouter } from "expo-router";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Services() {
   const router = useRouter();
+
   const categories = [
-    { title: "Cars", icon: "car-sports", color: "#4d90e7" },
-    { title: "Bikes", icon: "motorbike", color: "#ff7a5c" },
-    { title: "Electrician", icon: "lightning-bolt-outline", color: "#ffb300" },
-    { title: "Plumber", icon: "wrench", color: "#42a5f5" },
-    { title: "Carpenter", icon: "hammer", color: "#8d6e63" },
-    { title: "AC Repair", icon: "air-conditioner", color: "#26c6da" },
+    { title: "Cars", image: require("@/assets/icons2-img/car.png") },
+    { title: "Bikes", image: require("@/assets/icons2-img/bike.png") },
+    {
+      title: "Electrician",
+      image: require("@/assets/icons2-img/electrician.png"),
+    },
+    { title: "Plumber", image: require("@/assets/icons2-img/plumber.png") },
+    { title: "Carpenter", image: require("@/assets/icons2-img/carpenter.png") },
+    { title: "Make Up", image: require("@/assets/icons2-img/makeup.png") },
   ];
+
+  //   const categories = [
+  //   { title: "Cars", image: require("@/assets/icons-img/car.png") },
+  //   { title: "Bikes", image: require("@/assets/icons-img/bike.png") },
+  //   { title: "Electrician", image: require("@/assets/icons-img/electrician.png") },
+  //   { title: "Plumber", image: require("@/assets/icons-img/plumber.png") },
+  //   { title: "Carpenter", image: require("@/assets/icons-img/carpenter.png") },
+  //   { title: "Make Up", image: require("@/assets/icons-img/makeup.png") },
+  // ];
 
   return (
     <View style={styles.Container}>
@@ -39,13 +50,10 @@ export default function Services() {
               router.push(`/service-details?id=${index}&name=${item.title}`)
             }
           >
-            <View style={[styles.iconBox, { backgroundColor: item.color }]}>
-              <MaterialCommunityIcons
-                name={item.icon as any}
-                size={30}
-                color="#fff"
-              />
+            <View style={styles.iconWrapper}>
+              <Image source={item.image} style={styles.iconImage} />
             </View>
+
             <Text style={styles.label}>{item.title}</Text>
           </TouchableOpacity>
         ))}
@@ -92,28 +100,39 @@ const styles = StyleSheet.create({
     width: "32%",
     height: 130,
     backgroundColor: "#fff",
-    borderRadius: 18,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 18,
+    marginBottom: 20,
+    paddingTop: 8,
+    paddingBottom: 6,
     shadowColor: "#000",
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.07,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
     elevation: 3,
   },
 
-  iconBox: {
-    width: 55,
-    height: 55,
-    borderRadius: 30,
+  iconWrapper: {
+    width: 70,
+    height: 70,
+    borderRadius: 18,
+    backgroundColor: "#f5f7fa", 
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
     shadowColor: "#000",
-    shadowOpacity: 0.12,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
     elevation: 4,
+    overflow: "hidden",
+  },
+
+  iconImage: {
+    width: "50%",
+    height: "50%",
+    resizeMode: "contain",
   },
 
   label: {

@@ -1,6 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+
+import { ArrowLeft, Heart, Share2 } from "lucide-react-native";
 
 import React from "react";
 
@@ -12,11 +14,17 @@ import {
   View,
 } from "react-native";
 
-export default function ServiceDetails() {
+type ServiceItem = {
+  id: number;
+  title: string;
+  desc: string;
+  icon: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+};
 
+export default function ServiceDetails() {
   const { name } = useLocalSearchParams();
 
-  const staticData: any = {
+  const staticData: Record<string, ServiceItem[]> = {
     Cars: [
       {
         id: 1,
@@ -103,12 +111,32 @@ export default function ServiceDetails() {
     ],
   };
 
-  const items = staticData[name as any] || [];
+  const items = staticData[name as keyof typeof staticData] || [];
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+          <ArrowLeft
+            size={22}
+            color="#1A1A1A"
+            style={{
+              marginTop: 10,
+            }}
+          />
+        </TouchableOpacity>
+
         <Text style={styles.headerTitle}>{name}</Text>
+
+        <View style={styles.rightIcons}>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Share2 size={22} color="#1A1A1A" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.iconBtn}>
+            <Heart size={22} color="#E63946" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <FlatList
@@ -121,7 +149,7 @@ export default function ServiceDetails() {
             <View style={styles.row}>
               <View style={styles.iconBox}>
                 <MaterialCommunityIcons
-                  name={item.icon as any}
+                  name={item.icon}
                   size={26}
                   color="#2D6AE7"
                 />
@@ -149,21 +177,47 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F4F7FB" },
 
   header: {
-    paddingVertical: 18,
+    flexDirection: "row",
     alignItems: "center",
+    paddingTop: 50,
+    paddingBottom: 18,
+    paddingHorizontal: 18,
     backgroundColor: "#FFFFFF",
     elevation: 4,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+    height: 100,
+  },
+
+  backBtn: {
+    backgroundColor: "#e3e6f2ff",
+    padding: 10,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   headerTitle: {
-    fontSize: 26,
+    flex: 1,
+    marginLeft: 14,
+    fontSize: 24,
     fontWeight: "700",
     color: "#1A1A1A",
+  },
+
+  rightIcons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  iconBtn: {
+    marginLeft: 12,
+    backgroundColor: "#F1F4FF",
+    padding: 8,
+    borderRadius: 10,
   },
 
   card: {

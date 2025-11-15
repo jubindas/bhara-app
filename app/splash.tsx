@@ -1,9 +1,15 @@
 import { router } from "expo-router";
+
 import { useEffect, useRef } from "react";
+
 import { Animated, StyleSheet, View } from "react-native";
+
+import { useAuth } from "@/hooks/useAuth";
 
 export default function SplashScreen() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -12,16 +18,22 @@ export default function SplashScreen() {
       useNativeDriver: true,
     }).start(() => {
       setTimeout(() => {
+        if (loading) return;
+
         Animated.timing(fadeAnim, {
           toValue: 0,
           duration: 500,
           useNativeDriver: true,
         }).start(() => {
-          router.replace("/login");
+          if (user) {
+            router.replace("/(app)/(tabs)");
+          } else {
+            router.replace("/login");
+          }
         });
       }, 900);
     });
-  }, [fadeAnim]);
+  }, [fadeAnim, user, loading]);
 
   return (
     <View style={styles.container}>

@@ -1,6 +1,17 @@
+import { BASE_URL } from "@/constants/url";
+
+import { useAuth } from "@/hooks/useAuth";
+
+import axios from "axios";
+
 import { router } from "expo-router";
+
 import { useState } from "react";
+
+import { Eye, EyeOff } from "lucide-react-native";
+
 import {
+  Alert,
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
@@ -13,7 +24,53 @@ import {
 
 export default function Login() {
   const [phone, setPhone] = useState("");
+
   const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { login } = useAuth();
+
+  const handleLogin = async () => {
+    if (!phone || !password) {
+      return Alert.alert("Error", "Please enter both phone and password");
+    }
+
+    try {
+      setLoading(true);
+      const res = await axios.post(`${BASE_URL}/login`, {
+        phone,
+        password,
+      });
+
+      console.log("Login response:", res.data);
+
+      const token = res.data?.token;
+
+      if (!token) {
+        return Alert.alert("Error", "Token not received from server");
+      }
+
+      await login(token);
+
+      Alert.alert("Success", "Logged in successfully!");
+
+      router.replace("/(app)/(tabs)");
+    } catch (error: any) {
+      console.log("Login Error:", error.response?.data || error);
+
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Invalid phone or password";
+
+      Alert.alert("Login Failed", message.toString());
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -38,25 +95,36 @@ export default function Login() {
             onChangeText={setPhone}
           />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            placeholderTextColor="#8e8e8e"
-            value={password}
-            onChangeText={setPassword}
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="Password"
+              placeholderTextColor="#8e8e8e"
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
+            />
 
-          <TouchableOpacity style={styles.btn}>
-            <Text style={styles.btnText}>Login</Text>
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.eyeButton}
+            >
+              {showPassword ? (
+                <EyeOff size={22} color="#555" />
+              ) : (
+                <Eye size={22} color="#555" />
+              )}
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.btn} onPress={handleLogin}>
+            <Text style={styles.btnText}>
+              {loading ? "Logging in..." : "Login"}
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => router.push("/signup")}>
             <Text style={styles.link}>Dont have an account? Sign Up</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => router.replace("/(app)/(tabs)/index")}>
-            <Text style={styles.skip}>Skip for now →</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -65,11 +133,7 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-
+  container: { flex: 1, backgroundColor: "#ffffff" },
   topImage: {
     position: "absolute",
     top: 0,
@@ -79,7 +143,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 30,
   },
-
   card: {
     flex: 1,
     backgroundColor: "#ffffff",
@@ -88,15 +151,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingTop: 30,
     paddingBottom: 20,
-
     elevation: 10,
-    shadowColor: "#000000",
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-
     marginTop: "65%",
   },
-
   title: {
     fontSize: 28,
     fontWeight: "800",
@@ -104,7 +161,6 @@ const styles = StyleSheet.create({
     marginBottom: 25,
     color: "#333",
   },
-
   input: {
     backgroundColor: "#f5f5f5",
     padding: 14,
@@ -114,6 +170,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e2e2e2",
   },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderWidth: 1,
+    borderColor: "#e2e2e2",
+    borderRadius: 12,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 14,
+    fontSize: 16,
+  },
+
+  eyeButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+  },
 
   btn: {
     backgroundColor: "#4687f0ff",
@@ -121,30 +198,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
-    shadowColor: "#6d85e4ff",
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
   },
-
   btnText: {
     color: "white",
     fontSize: 18,
     fontWeight: "700",
   },
-
   link: {
     marginTop: 20,
     color: "#4a6cf7",
     textAlign: "center",
     fontSize: 15,
     fontWeight: "600",
-  },
-
-  skip: {
-    marginTop: 18,
-    textAlign: "center",
-    fontSize: 15,
-    color: "#777",
-    fontWeight: "500",
   },
 });

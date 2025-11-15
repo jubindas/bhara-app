@@ -15,7 +15,10 @@ import {
 } from "react-native";
 
 export default function HomeScreen() {
+  
   const { location, loading } = useLocation();
+
+  
 
   return (
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
@@ -46,7 +49,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* CART ICON */}
         <View style={styles.cart}>
           <MaterialIcons name="shopping-cart" size={40} color="#fff" />
         </View>
